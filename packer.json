@@ -1,0 +1,38 @@
+{
+    "builders": [
+        {
+            "access_key": "{{user `aws_access_key`}}",
+            "ami_name": "sftp2s3-{{timestamp}}",
+            "instance_type": "t3.medium",
+            "region": "us-west-2",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "ssh_username": "centos",
+            "vpc_id": "vpc-",
+            "subnet_id": "subnet-",
+            "associate_public_ip_address": true,
+            "source_ami_filter": {
+                "filters": {
+                  "virtualization-type": "hvm",
+                  "name": "CentOS 8*",
+                  "root-device-type": "ebs",
+                  "architecture": "x86_64"
+                },
+                "owners": ["125523088429"],
+                "most_recent": true
+            },
+            "type": "amazon-ebs"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "environment_vars": [
+                "AWS_ACCESS_KEY_ID={{user `aws_access_key`}}",
+                "AWS_SECRET_ACCESS_KEY={{user `aws_secret_key`}}",
+                "DEBIAN_FRONTEND=noninteractive"
+            ],
+            "execute_command": "sudo  bash -c '{{ .Vars }} {{ .Path }}'",
+            "script": "./build_ami.sh"
+        }
+    ]
+}

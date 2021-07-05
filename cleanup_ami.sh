@@ -1,0 +1,1 @@
+aws ec2 describe-images --filters Name=name,Values=sftp2s3* | jq -r '.[] | sort_by(.CreationDate) | .[0:-1] | .[].ImageId' | xargs -i aws ec2 deregister-image --image-id {}
